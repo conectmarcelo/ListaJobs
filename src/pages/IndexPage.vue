@@ -1,16 +1,21 @@
 <template>
   <q-page padding>
-
     <q-table
       title="Treats"
       :rows="jobs"
       :columns="columns"
       row-key="name"
+      :filter="filter"
     >
-    <template v-slot:top>
-      <span class="text-h5">Jobs</span>
-      <q-space/>
-      <q-btn color="primary" label="Adicionar" :to="{name:'formJobs'}"/>
+    <template v-slot:top-right>
+      <q-input borderless dense debounce="300" v-model="filter" placeholder="Pesquisar">
+      <template v-slot:prepend >
+        <q-icon name="search" />
+      </template>
+      <template v-slot:append >
+        <q-btn color="primary" label="Adicionar" :to="{name:'formJobs'}"/>
+      </template>
+      </q-input>
     </template>
     <template v-slot:body-cell-actions="props">
       <q-td :props="props" class="q-gutter-sm">
@@ -23,7 +28,6 @@
 </template>
 
 <script>
-
 import { defineComponent, ref, onMounted } from 'vue'
 import jobsService from 'src/services/jobs.js'
 import { useQuasar } from 'quasar'
@@ -35,17 +39,21 @@ export default defineComponent({
   setup () {
     const jobs = ref([])
     const { list, remove } = jobsService()
-
+    const $q = useQuasar()
+    const router = useRouter()
     const columns = [
       { name: 'id', label: 'ID', align: 'left', field: 'id', sortable: true },
       { name: 'descricao', label: 'Descrição', align: 'left', field: 'descricao', sortable: true },
-      { name: 'dtMaxConclusao', label: 'Data Máxima de conclusão', align: 'left', field: 'dtMaxConclusao', sortable: true },
+      {
+        name: 'dtMaxConclusao',
+        label: 'Data Máxima de conclusão',
+        align: 'left',
+        field: (row) => formataDataHora(row.dtMaxConclusao),
+        sortable: true
+      },
       { name: 'tempoEstimado', label: 'Tempo estimado', align: 'left', field: 'tempoEstimado', sortable: true },
       { name: 'actions', label: 'Ações', align: 'right', field: 'actions' }
     ]
-
-    const $q = useQuasar()
-    const router = useRouter()
 
     onMounted(() => {
       getJobs()
@@ -81,11 +89,22 @@ export default defineComponent({
       router.push({ name: 'formJobs', params: { id } })
     }
 
+    const formataDataHora = (dataHora) => {
+      const data = dataHora.split(' ')[0].split('-').reverse().join('/')
+
+      const hora = dataHora.split(' ')[1].replace(':00', '')
+
+      return `${data} ${hora}`
+    }
+
     return {
       jobs,
       columns,
       deleteJob,
-      editjob
+      editjob,
+      formataDataHora,
+      filter: ref(''),
+      selected: ref([])
     }
   }
 })
