@@ -7,8 +7,14 @@
       :columns="columns"
       row-key="name"
     >
+    <template v-slot:top>
+      <span class="text-h5">Jobs</span>
+      <q-space/>
+      <q-btn color="primary" label="Adicionar" :to="{name:'formJobs'}"/>
+    </template>
     <template v-slot:body-cell-actions="props">
-      <q-td :props="props">
+      <q-td :props="props" class="q-gutter-sm">
+        <q-btn icon="edit" color="info" dense size="md" @click="editjob(props.row.id)"/>
         <q-btn icon="delete" color="negative" dense size="md" @click="deleteJob(props.row.id)"/>
       </q-td>
     </template>
@@ -21,6 +27,8 @@
 import { defineComponent, ref, onMounted } from 'vue'
 import jobsService from 'src/services/jobs.js'
 import { useQuasar } from 'quasar'
+import { useRouter } from 'vue-router'
+
 export default defineComponent({
   name: 'IndexPage',
 
@@ -37,6 +45,7 @@ export default defineComponent({
     ]
 
     const $q = useQuasar()
+    const router = useRouter()
 
     onMounted(() => {
       getJobs()
@@ -68,10 +77,15 @@ export default defineComponent({
       }
     }
 
+    const editjob = (id) => {
+      router.push({ name: 'formJobs', params: { id } })
+    }
+
     return {
       jobs,
       columns,
-      deleteJob
+      deleteJob,
+      editjob
     }
   }
 })
