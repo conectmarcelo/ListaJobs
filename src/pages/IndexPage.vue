@@ -13,13 +13,14 @@
 <script>
 
 import { defineComponent, ref, onMounted } from 'vue'
-import { api } from 'boot/axios'
+import jobsService from 'src/services/jobs.js'
 
 export default defineComponent({
   name: 'IndexPage',
 
   setup () {
     const jobs = ref([])
+    const { list } = jobsService()
 
     const columns = [
       { name: 'id', label: 'ID', align: 'left', field: 'id', sortable: true },
@@ -34,7 +35,7 @@ export default defineComponent({
 
     const getJobs = async () => {
       try {
-        const { data } = await api.get('jobs')
+        const { data } = await list()
         jobs.value = data
       } catch (error) {
 
