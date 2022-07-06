@@ -1,34 +1,37 @@
 <template>
 
 <q-page padding>
-  <q-form @submit="onSubmit" class="row col-lg-12" >
-    <div class="row col-lg-12 q-gutter-sm">
+  <q-form @submit="onSubmit" >
+      <div class="col-lg-12 q-gutter-sm">
       <q-input
         outlined
+        dense
         v-model="form.descricao"
         label="Descrição"
         :rules="[ val => val && val.length > 0 || 'Campo obrigatório']"
-        class="col-lg-6 col-xs-12"
+        class="row"
+
       />
 
      <q-select
         outlined
+        dense
         v-model="form.tempoEstimado"
         label="Tempo estimado"
         :options="options"
-        class="col-lg-5 col-xs-12"
+        class="row"
+
       />
-    </div>
 
-    <span class="text-h6">Data máxima para conclusão:</span>
-    <div class="q-gutter-md row col-lg-12 items-start">
-      <q-date v-model="form.dtMaxConclusao" mask="YYYY-MM-DD HH:mm:ss" color="primary" />
-      <q-time v-model="form.dtMaxConclusao" mask="YYYY-MM-DD HH:mm:ss" color="primary" />
-    </div>
+      <div class="row q-gutter-sm">
+        <q-date v-model="form.dtMaxConclusao" mask="YYYY-MM-DD HH:mm:ss" color="primary" />
+        <q-time v-model="form.dtMaxConclusao" mask="YYYY-MM-DD HH:mm:ss" color="primary" />
+      </div>
 
-    <div class="float-right col-lg-6 q-gutter-sm q-mt-sm">
-      <q-btn label="Salvar" color="primary" class="float-right" icon="save" type="submit"/>
-      <q-btn label="Cancelar" color="white" text-color="primary" class="float-right" :to="{name:'home'}"/>
+      <div class="row q-gutter-sm">
+        <q-btn label="Cancelar" color="white" text-color="primary" :to="{name:'home'}"/>
+        <q-btn label="Salvar" color="primary" icon="save" type="submit"/>
+      </div>
 
     </div>
 
@@ -55,7 +58,7 @@ export default defineComponent({
     const form = ref({
       id: '',
       descricao: '',
-      dtMaxConclusao: '2019-02-22 21:02:00',
+      dtMaxConclusao: '2012-07-01 00:00:00',
       tempoEstimado: ''
 
     })

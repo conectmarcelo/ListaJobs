@@ -1,12 +1,29 @@
 <template>
   <q-page padding>
+
+    <q-form
+      @submit.prevent="onSubmit"
+      class="q-gutter-md"
+    >
+      <div class="row col-lg-12 q-gutter-sm justify-start">
+        <P>Data Inicial:</P>
+        <q-input outlined dense v-model="dtInicial" type="date"/>
+        <p>Data Final:</p>
+        <q-input outlined dense v-model="dtFinal" type="date"/>
+        <q-btn label="Filtrar" @click="filtrar(dtInicial, dtFinal)" color="primary"></q-btn>
+        <q-btn label="Listar todos" @click="getJobs()" color="positive"></q-btn>
+      </div>
+    </q-form>
+    <p></p>
+
     <q-table
-      title="Treats"
+      title="Jobs"
       :rows="jobs"
       :columns="columns"
       row-key="name"
       :filter="filter"
-    >
+      >
+
     <template v-slot:top-right>
       <q-input borderless dense debounce="300" v-model="filter" placeholder="Pesquisar">
       <template v-slot:prepend >
@@ -91,20 +108,38 @@ export default defineComponent({
 
     const formataDataHora = (dataHora) => {
       const data = dataHora.split(' ')[0].split('-').reverse().join('/')
-
       const hora = dataHora.split(' ')[1].replace(':00', '')
 
       return `${data} ${hora}`
     }
 
+    const dtInicial = ref('')
+    const dtFinal = ref('')
+
+    const filtrar = async (dtInicial, dtFinal) => {
+      console.log(dtInicial)
+      console.log(dtFinal)
+
+      const objetosFiltrados = jobs.value.filter(result => {
+        return result.dtMaxConclusao >= `${dtInicial}` && result.dtMaxConclusao <= `${dtFinal}`
+      })
+
+      jobs.value = objetosFiltrados
+    }
+
     return {
       jobs,
       columns,
+      dtInicial,
+      dtFinal,
       deleteJob,
       editjob,
       formataDataHora,
       filter: ref(''),
-      selected: ref([])
+      selected: ref([]),
+      filtrar,
+      getJobs
+
     }
   }
 })
